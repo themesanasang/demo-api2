@@ -11,15 +11,17 @@ import * as HttpStatus from 'http-status-codes';
 import * as express from 'express';
 import * as cors from 'cors';
 
-import Knex = require('knex');
-import { MySqlConnectionConfig } from 'knex';
+import knex, { Knex } from 'knex'
+///import { MySqlConnectionConfig } from 'knex';
 import { Router, Request, Response, NextFunction } from 'express';
 import { Jwt } from './models/jwt';
 
 import indexRoute from './routes/index';
 import loginRoute from './routes/login';
 import requestRoute from './routes/request';
-
+import usersRoute from './routes/users';
+import patientRoute from './routes/patient'
+import visitRoute from './routes/visit'
 // Assign router to the express.Router() instance
 const app: express.Application = express();
 
@@ -40,7 +42,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(cors());
 
-let connection: MySqlConnectionConfig = {
+let connection = {
   host: process.env.DB_HOST,
   port: +process.env.DB_PORT,
   database: process.env.DB_NAME,
@@ -50,7 +52,7 @@ let connection: MySqlConnectionConfig = {
   debug: true
 }
 
-let db = Knex({
+let db = knex({
   client: 'mysql',
   connection: connection,
   pool: {
@@ -96,6 +98,9 @@ let checkAuth = (req: Request, res: Response, next: NextFunction) => {
 app.use('/login', loginRoute);
 app.use('/api', checkAuth, requestRoute);
 app.use('/', indexRoute);
+app.use('/users', usersRoute);
+app.use('/patient', patientRoute);
+app.use('/visit',visitRoute);
 
 //error handlers
 

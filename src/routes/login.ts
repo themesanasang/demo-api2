@@ -14,7 +14,7 @@ const jwt = new Jwt();
 
 const router: Router = Router();
 
-router.post('/customer', async (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response) => {
   let username: string = req.body.username;
   let password: string = req.body.password;
 
@@ -26,9 +26,10 @@ router.post('/customer', async (req: Request, res: Response) => {
 
     if (rs.length) {
 
+      //res.send(rs[0].fullname);
       let payload = {
-        fullname: `${rs[0].first_name} ${rs[0].last_name}`,
-        id: rs[0].user_id,
+        username: rs[0].username,
+        fullname: rs[0].fullname,
       }
 
       let token = jwt.sign(payload);
